@@ -41,6 +41,20 @@ jobs:
         with:
           name: sitio-web
           path: dist/
+      
+      - name: Notificar EXITO a Discord
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"embeds\":[{\"title\":\"✅ Pipeline exitoso\",\"description\":\"**Repo:** ${{ github.repository }}\\n**Commit:** ${{ github.sha }}\\n**Autor:** ${{ github.actor }}\\n**Rama:** ${{ github.ref_name }}\",\"color\":3066993}]}" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notificar FALLO a Discord
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"embeds\":[{\"title\":\"❌ Pipeline fallido\",\"description\":\"**Repo:** ${{ github.repository }}\\n**Commit:** ${{ github.sha }}\\n**Autor:** ${{ github.actor }}\\n**Rama:** ${{ github.ref_name }}\",\"color\":15158332}]}" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   # ─── JOB 2: Deploy a GitHub Pages (Entrega Continua) ───────────
   deploy:
@@ -84,3 +98,10 @@ jobs:
       - name: 🚀 Deploy a GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Notificar DEPLOY EXITOSO a Discord
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"embeds\":[{\"title\":\"🚀 Deploy exitoso a GitHub Pages\",\"description\":\"**URL:** https://nad06.github.io/parcial-ci-cd/\\n**Autor:** ${{ github.actor }}\",\"color\":5763719}]}" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
