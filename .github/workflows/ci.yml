@@ -1,0 +1,86 @@
+name: CI/CD Pipeline
+
+# El pipeline se activa con cada push o Pull Request a main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # ─── JOB 1: Integración Continua ───────────────────────────────
+  build-and-test:
+    name: Build y Pruebas Automatizadas
+    runs-on: ubuntu-latest   # Servidor limpio en la nube
+
+    steps:
+      - name: 📥 Obtener código del repositorio
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Instalar dependencias
+        run: npm ci
+
+      - name: 🔍 Inspección de código (ESLint)
+        run: npm run lint
+
+      - name: 🧪 Ejecutar pruebas automatizadas
+        run: npm test
+
+      - name: 🏗️ Build
+        run: npm run build
+
+      - name: 📤 Guardar artefacto de build
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitio-web
+          path: dist/
+
+  # ─── JOB 2: Deploy a GitHub Pages (Entrega Continua) ───────────
+  deploy:
+    name: Deploy a GitHub Pages
+    needs: build-and-test        # Solo corre si el Job 1 pasó
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'   # Solo en rama main
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 📥 Obtener código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Instalar dependencias
+        run: npm ci
+
+      - name: 🏗️ Build para producción
+        run: npm run build
+
+      - name: ⚙️ Configurar GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: 📤 Subir artefacto a Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+      - name: 🚀 Deploy a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

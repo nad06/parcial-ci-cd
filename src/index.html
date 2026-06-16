@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>App CI/CD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f4f8;
+    }
+    .card {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 { color: #2d3748; }
+    p  { color: #718096; }
+    #resultado {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #3182ce;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.5rem;
+      background: #3182ce;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 Entorno CI/CD</h1>
+    <p>Hacé clic para sumar</p>
+    <div id="resultado">0</div>
+    <button id="btnSumar">Sumar +1</button>
+  </div>
+
+  <script>
+    // Exportamos la lógica para poder testearla
+    function obtenerValorActual() {
+      const el = document.getElementById("resultado");
+      return parseInt(el ? el.textContent : "0");
+    }
+
+    function sumar() {
+      const el = document.getElementById("resultado");
+      if (el) {
+        el.textContent = obtenerValorActual() + 1;
+      }
+    }
+
+    document.getElementById("btnSumar")
+      .addEventListener("click", sumar);
+
+    // Necesario para Jest
+    if (typeof module !== "undefined") {
+      module.exports = { sumar, obtenerValorActual };
+    }
+  </script>
+</body>
+</html>
