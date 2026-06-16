@@ -105,3 +105,28 @@ jobs:
           curl -H "Content-Type: application/json" \
           -d "{\"embeds\":[{\"title\":\"🚀 Deploy exitoso a GitHub Pages\",\"description\":\"**URL:** https://nad06.github.io/parcial-ci-cd/\\n**Autor:** ${{ github.actor }}\",\"color\":5763719}]}" \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    
+  docker:
+    name: Build imagen Docker
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build imagen Docker
+        run: docker build -t parcial-ci-cd .
+
+      - name: Verificar contenedor
+        run: |
+          docker run -d -p 8080:80 --name test-container parcial-ci-cd
+          sleep 3
+          curl -f http://localhost:8080 || exit 1
+          docker stop test-container
+
+      - name: Notificar Docker a Discord
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"embeds\":[{\"title\":\"🐳 Imagen Docker buildeada OK\",\"description\":\"**Repo:** ${{ github.repository }}\\n**Autor:** ${{ github.actor }}\",\"color\":1942002}]}" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}

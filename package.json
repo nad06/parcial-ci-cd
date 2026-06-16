@@ -6,7 +6,9 @@
     "test":  "jest --coverage",
     "lint":  "eslint src/**/*.js || true",
     "build": "echo 'Build OK - copiando archivos...' && mkdir -p dist && cp src/index.html dist/index.html",
-    "start": "npx serve src"
+    "start": "npx serve src",
+    "docker:build": "docker build -t parcial-ci-cd .",
+    "docker:run": "docker run -p 8080:80 parcial-ci-cd"
   },
   "devDependencies": {
     "@jest/globals": "^29.0.0",
