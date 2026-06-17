@@ -49,27 +49,7 @@
     <button id="btnSumar">Sumar +1</button>
   </div>
 
-  <script>
-    // Exportamos la lógica para poder testearla
-    function obtenerValorActual() {
-      const el = document.getElementById("resultado");
-      return parseInt(el ? el.textContent : "0");
-    }
-
-    function sumar() {
-      const el = document.getElementById("resultado");
-      if (el) {
-        el.textContent = obtenerValorActual() + 1;
-      }
-    }
-
-    document.getElementById("btnSumar")
-      .addEventListener("click", sumar);
-
-    // Necesario para Jest
-    if (typeof module !== "undefined") {
-      module.exports = { sumar, obtenerValorActual };
-    }
-  </script>
+  <script src="app.js"></script>
+  
 </body>
 </html>

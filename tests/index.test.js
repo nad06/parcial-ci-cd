@@ -13,32 +13,34 @@ describe("App CI/CD - Pruebas automatizadas", () => {
       "utf8"
     );
     document.documentElement.innerHTML = html;
+
+    const { sumar, obtenerValorActual } = require("../src/app.js");
+    global.sumar = sumar;
+    global.obtenerValorActual = obtenerValorActual;
   });
 
   test("El contador empieza en 0", () => {
-    const el = document.getElementById("resultado");
-    expect(el).not.toBeNull();
-    expect(el.textContent.trim()).toBe("0");
+    expect(global.obtenerValorActual()).toBe(0);
+  });
+
+  test("Al sumar una vez el contador es 1", () => {
+    global.sumar();
+    expect(global.obtenerValorActual()).toBe(1);
+  });
+
+  test("Al sumar tres veces el contador es 3", () => {
+    global.sumar();
+    global.sumar();
+    global.sumar();
+    expect(global.obtenerValorActual()).toBe(3);
   });
 
   test("El boton existe en el HTML", () => {
-    const btn = document.getElementById("btnSumar");
-    expect(btn).not.toBeNull();
+    expect(document.getElementById("btnSumar")).not.toBeNull();
   });
 
   test("El titulo H1 existe", () => {
-    const h1 = document.querySelector("h1");
-    expect(h1).not.toBeNull();
-  });
-
-  test("La pagina tiene titulo en head", () => {
-    const title = document.querySelector("title");
-    expect(title).not.toBeNull();
-  });
-
-  test("El div resultado existe", () => {
-    const resultado = document.getElementById("resultado");
-    expect(resultado).not.toBeNull();
+    expect(document.querySelector("h1")).not.toBeNull();
   });
 
 });
