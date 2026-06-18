@@ -19,17 +19,10 @@ describe("App CI/CD - Pruebas automatizadas", () => {
     global.obtenerValorActual = obtenerValorActual;
   });
 
-  /*test fallado*/ 
-  test("El contador empieza en 0", () => {
-    expect(global.obtenerValorActual()).toBe(5);
-  });
-
-  /* test original
   test("El contador empieza en 0", () => {
     expect(global.obtenerValorActual()).toBe(0);
   });
-  */
-
+  
   test("Al sumar una vez el contador es 1", () => {
     global.sumar();
     expect(global.obtenerValorActual()).toBe(1);
