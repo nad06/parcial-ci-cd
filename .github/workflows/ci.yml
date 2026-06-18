@@ -41,6 +41,12 @@ jobs:
         with:
           name: sitio-web
           path: dist/
+
+      - name: 🔎 Análisis SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
       - name: Notificar EXITO a Discord
         if: success()
@@ -107,6 +113,7 @@ jobs:
           ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   
+  # ─── JOB 3: Docker
   docker:
     name: Build imagen Docker
     needs: build-and-test
